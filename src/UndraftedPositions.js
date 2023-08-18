@@ -7,13 +7,13 @@ function UndraftedPositions(props) {
 
   return (
     <div className='col-md-6 col-sm-12 hidden-xs'>
-        <div>Current Pick:{props.currentPick+1} Next Pick:{props.nextPick} Pick After:{props.pickAfter} All Picks: {props.picks.toString()}</div>
+        <div>Current Pick:{props.currentPick+1} | Next Pick:{props.nextPick} | Pick After:{props.pickAfter} </div>
         <br />
       <div className='aid-title'>
         <i className='fa fa-signal'></i> Top Picks By Position
       </div>
       <div className='col-sm-6'>
-        <span className="col-sm-12 position-title">Runningbacks</span>
+        <span className="col-sm-12 position-title">Running Backs</span>
         <Undrafted
           fields={fields}
           players={props.players}

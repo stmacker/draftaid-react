@@ -11,7 +11,7 @@ class PlayerTable extends PureComponent {
     return players.map((player, i) => {
       return (
         <tr key={i}
-            className={this.trClassName(player.tier, this.props.disableColor)}
+            className={this.trClassName(player.diff, this.props.disableColor)}
             onClick={() => this.onClick(player)}>
           {this.columns(player)}
         </tr>
@@ -25,23 +25,23 @@ class PlayerTable extends PureComponent {
     }
   }
 
-  trClassName(tier, disable) {
+  trClassName(diff, disable) {
     if (disable) {
       return 'pointer'
     }
-    if (tier % 4 === 0) {
+    if (diff < 0) {
+      return 'danger pointer'
+    }
+    if (diff < 15) {
       return 'active pointer'
     }
-    if (tier % 4 === 1) {
-      return 'success pointer'
-    }
-    if (tier % 4 === 2) {
+    if (diff < 30) {
       return 'warning pointer'
     }
-    if (tier % 4 === 3) {
-      return 'info pointer'
+    if (diff < 45) {
+      return 'success pointer'
     }
-    return 'danger pointer'
+    return 'info pointer'
   }
 
   columns(player) {
