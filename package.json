@@ -2,7 +2,7 @@
   "name": "draftaid",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://stmacker.github.io/ff/",
+  "homepage": "https://stmacker.github.io/",
   "devDependencies": {
     "gh-pages": "^6.0.0",
     "json-loader": "^0.5.7",
