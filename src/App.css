@@ -6,11 +6,14 @@
   overflow-y: auto;
 }
 
+input[type='number']{
+  width: 40px;
+}
+
 .table-condensed > tbody > tr > td {
   padding: 2px;
   font-size: 12px;
   border-left: 1px solid darkgrey;
-  border-right: 1px;
 }
 
 .aid-title {
@@ -37,19 +40,19 @@ html, body {
 
 #main {
   overflow:auto;
-  padding-bottom:60px; /* this needs to be bigger than footer height*/
+  padding-bottom:20px; /* this needs to be bigger than footer height*/
 }
 
 .footer {
   position: relative;
   margin-top: -50px; /* negative value of footer height */
-  height: 50px;
+  height: 20px;
   clear:both;
   padding:10px;
 }
 
 .overall-rankings {
-  height: 250px;
+  height: 275px;
   margin-bottom: 10px;
 }
 
@@ -69,7 +72,7 @@ html, body {
   }
 
   .overall-rankings {
-    height: 710px;
+    height: 750px;
     margin-bottom: 10px;
   }
 
@@ -81,8 +84,4 @@ html, body {
     padding: 2px;
     font-size: 13px;
   }
-}
-
-input[type='number']{
-  width: 40px;
 }

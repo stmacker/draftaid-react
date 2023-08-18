@@ -10,11 +10,11 @@ class PlayerTable extends PureComponent {
 
     return players.map((player, i) => {
       return (
-        <tr key={i}
-            className={this.trClassName(player.diff, this.props.disableColor)}
-            onClick={() => this.onClick(player)}>
-          {this.columns(player)}
-        </tr>
+          <tr key={i}
+              className={this.trClassName(player.diff, this.props.disableColor)}
+              onClick={() => this.onClick(player)}>
+            {this.columns(player)}
+          </tr>
       )
     });
   }
@@ -32,16 +32,16 @@ class PlayerTable extends PureComponent {
     if (diff < 0) {
       return 'danger pointer'
     }
-    if (diff < 15) {
+    if (diff < 12) {
       return 'active pointer'
     }
-    if (diff < 30) {
+    if (diff < 24) {
       return 'warning pointer'
     }
-    if (diff < 45) {
+    if (diff < 36) {
       return 'success pointer'
     }
-    return 'info pointer'
+      return 'info pointer'
   }
 
   columns(player) {
@@ -56,9 +56,9 @@ class PlayerTable extends PureComponent {
 
   render() {
     return (
-      <table className='table table-condensed table-hover table-striped'>
-        <tbody>{this.rows()}</tbody>
-      </table>
+        <table className='table table-condensed table-hover table-striped'>
+          <tbody>{this.rows()}</tbody>
+        </table>
     );
   }
 }
