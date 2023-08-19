@@ -95,10 +95,10 @@ class DraftBoard extends Component {
                 break;
             }
         }
-        this.updatePlayerValues();
+        await this.updatePlayerValues();
     }
 
-    updatePlayerValues(){
+    async updatePlayerValues() {
         let nextQB = 0;
         let nextRB = 0;
         let nextWR = 0;
@@ -106,44 +106,45 @@ class DraftBoard extends Component {
         let nextK = 0;
         let nextDST = 0;
         let pPlayers = this.state.filteredPlayers;
-        let pickWindow = this.state.pickAfter - this.state.currentDraft;
-        pPlayers.forEach((player, index)=>{
-            switch(player.position) {
+        let pickAfter = Number(this.state.pickAfter);
+        pPlayers.forEach((player, index) => {
+            let adp = index+1;
+            switch (player.position) {
                 case 'QB':
-                    if(nextQB === 0 && (index+1)>pickWindow){
+                    if (nextQB === 0 && adp > pickAfter) {
                         nextQB = player.fpts;
                     }
                     break;
                 case 'RB':
-                    if(nextRB === 0 && (index+1)>pickWindow){
+                    if (nextRB === 0 && (adp > pickAfter)) {
                         nextRB = player.fpts;
                     }
                     break;
                 case 'WR':
-                    if(nextWR === 0 && (index+1)>pickWindow){
+                    if (nextWR === 0 && (adp > pickAfter)) {
                         nextWR = player.fpts;
                     }
                     break;
                 case 'TE':
-                    if(nextTE === 0 && (index+1)>pickWindow){
+                    if (nextTE === 0 && (adp > pickAfter)) {
                         nextTE = player.fpts;
                     }
                     break;
                 case 'K':
-                    if(nextK === 0 && (index+1)>pickWindow){
+                    if (nextK === 0 && (adp > pickAfter)) {
                         nextK = player.fpts;
                     }
                     break;
                 case 'DST':
-                    if(nextDST === 0 && (index+1)>pickWindow){
+                    if (nextDST === 0 && (adp > pickAfter)) {
                         nextDST = player.fpts;
                     }
                     break;
                 default:
             }
         })
-        pPlayers.forEach((player, index)=>{
-            switch(player.position) {
+        pPlayers.forEach((player, index) => {
+            switch (player.position) {
                 case 'QB':
                     player.diff = Math.round(player.fpts - nextQB)
                     break;
@@ -166,7 +167,7 @@ class DraftBoard extends Component {
             }
         })
 
-        this.setState({
+        await this.setState({
             filteredPlayers: pPlayers
         })
 
