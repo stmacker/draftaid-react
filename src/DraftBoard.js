@@ -267,7 +267,7 @@ class DraftBoard extends Component {
                     currentDraft={this.state.currentDraft}
                     players={this.state.players}
                     undo={(c) => this.undo(c).then((p)=>this.setNextPicks())}
-                    reset={() => this.reset().then((p)=>this.setNextPicks())}
+                    reset={(e) => this.reset(e).then((p)=>this.setNextPicks())}
                 />
             </div>
         );
