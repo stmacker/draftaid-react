@@ -7,8 +7,7 @@ function UndraftedPositions(props) {
 
     return (
         <div className='col-md-6 col-sm-12 hidden-xs'>
-            <div>Current Pick:{props.currentPick+1} | Next Pick:{props.nextPick} | Pick After:{props.pickAfter} </div>
-            <br />
+           <br /> <br />
             <div className='aid-title'>
                 <i className='fa fa-signal'></i> Top Picks By Position
             </div>
@@ -18,7 +17,7 @@ function UndraftedPositions(props) {
                     fields={fields}
                     players={props.players}
                     draft={(p) => props.draft(p)}
-                    size={20}
+                    size={17}
                     position='RB'
                 />
             </div>
@@ -29,7 +28,7 @@ function UndraftedPositions(props) {
                     fields={fields}
                     players={props.players}
                     draft={(p) => props.draft(p)}
-                    size={20}
+                    size={17}
                     position='WR'
                 />
             </div>
@@ -40,7 +39,7 @@ function UndraftedPositions(props) {
                     fields={fields}
                     players={props.players}
                     draft={(p) => props.draft(p)}
-                    size={12}
+                    size={10}
                     position='QB'
                 />
             </div>
@@ -51,8 +50,28 @@ function UndraftedPositions(props) {
                     fields={fields}
                     players={props.players}
                     draft={(p) => props.draft(p)}
-                    size={12}
+                    size={10}
                     position='TE'
+                />
+            </div>
+            <div className='col-sm-6'>
+                <span className="col-sm-12 position-title">Kickers</span>
+                <Undrafted
+                    fields={fields}
+                    players={props.players}
+                    draft={(p) => props.draft(p)}
+                    size={3}
+                    position='K'
+                />
+            </div>
+            <div className='col-sm-6'>
+                <span className="col-sm-12 position-title">DST</span>
+                <Undrafted
+                    fields={fields}
+                    players={props.players}
+                    draft={(p) => props.draft(p)}
+                    size={3}
+                    position='DST'
                 />
             </div>
         </div>

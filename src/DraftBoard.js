@@ -114,35 +114,36 @@ class DraftBoard extends Component {
         let pickAfter = Number(this.state.pickAfter);
         await pPlayers.forEach((player, index) => {
             let adp = index+1;
+            let pts = player.fpts;
             switch (player.position) {
                 case 'QB':
-                    if (nextQB === 0 && adp > pickAfter) {
-                        nextQB = player.fpts;
+                    if (nextQB < pts && adp > pickAfter) {
+                        nextQB = pts;
                     }
                     break;
                 case 'RB':
-                    if (nextRB === 0 && (adp > pickAfter)) {
-                        nextRB = player.fpts;
+                    if (nextRB < pts && (adp > pickAfter)) {
+                        nextRB = pts;
                     }
                     break;
                 case 'WR':
-                    if (nextWR === 0 && (adp > pickAfter)) {
-                        nextWR = player.fpts;
+                    if (nextWR < pts && (adp > pickAfter)) {
+                        nextWR = pts;
                     }
                     break;
                 case 'TE':
-                    if (nextTE === 0 && (adp > pickAfter)) {
-                        nextTE = player.fpts;
+                        if (nextTE < pts && (adp > pickAfter)) {
+                        nextTE = pts;
                     }
                     break;
                 case 'K':
-                    if (nextK === 0 && (adp > pickAfter)) {
-                        nextK = player.fpts;
+                    if (nextK < pts && (adp > pickAfter)) {
+                        nextK = pts;
                     }
                     break;
                 case 'DST':
-                    if (nextDST === 0 && (adp > pickAfter)) {
-                        nextDST = player.fpts;
+                    if (nextDST < pts && (adp > pickAfter)) {
+                        nextDST = pts;
                     }
                     break;
                 default:
@@ -268,15 +269,15 @@ class DraftBoard extends Component {
                 <UndraftedPositions
                     players={this.state.players}
                     draft={(p) => this.draft(p).then(()=>this.setNextPicks())}
-                    currentPick={this.state.currentDraft}
-                    nextPick={this.state.nextPick}
-                    pickAfter={this.state.pickAfter}
                     picks={this.state.picks}
                 />
 
                 <Drafted
                     currentDraft={this.state.currentDraft}
                     players={this.state.players}
+                    currentPick={this.state.currentDraft}
+                    nextPick={this.state.nextPick}
+                    pickAfter={this.state.pickAfter}
                     undo={(c) => this.undo(c).then((p)=>this.setNextPicks()).then((v)=>this.updatePlayerValues)}
                     reset={() => this.reset().then(()=>this.setNextPicks()).then(()=>this.updatePlayerValues)}
                 />

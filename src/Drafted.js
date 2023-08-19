@@ -8,7 +8,8 @@ function Drafted(props) {
 
     return (
         <div className='col-md-3 col-sm-12 col-xs-12'>
-            <br /><br />
+            <div>Current Pick:{props.currentPick+1} | Next Pick:{props.nextPick} | Pick After:{props.pickAfter} </div>
+            <br />
             <div className='aid-title hidden-xs'>
                 <i className='fa fa-history'></i> Draft History
             </div>
