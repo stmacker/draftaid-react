@@ -41,6 +41,7 @@ class DraftBoard extends Component {
                     format: format,
                     query: '',
                 });
+        return Promise.resolve("players imported");
         }
 
     async updateTeams(teamIn) {
@@ -49,6 +50,7 @@ class DraftBoard extends Component {
             teams: teamIn,
         });
         await this.setPicks();
+        return Promise.resolve("number of teams updated");
     }
 
     async updatePick(pickIn) {
@@ -63,6 +65,7 @@ class DraftBoard extends Component {
             pick: pickIn,
         })
         await this.setPicks()
+        return Promise.resolve("pick position updated");
     }
 
     async setPicks() {
@@ -78,10 +81,11 @@ class DraftBoard extends Component {
         }
         await this.setState({picks: newPicks})
         await this.setNextPicks()
+        return Promise.resolve("picks set");
     }
     async setNextPicks() {
         for (let round = 1; round <= 16; round++) {
-            if (this.state.picks[round - 1] >= this.state.currentDraft) {
+            if (this.state.picks[round - 1] >= this.state.currentDraft+1) {
                 if(this.state.picks[round-1]+1===this.state.picks[round]){
                     await this.setState({
                         nextPick: this.state.picks[round-1],
@@ -96,6 +100,7 @@ class DraftBoard extends Component {
             }
         }
         await this.updatePlayerValues();
+        return Promise.resolve("picks updated");
     }
 
     async updatePlayerValues() {
@@ -107,7 +112,7 @@ class DraftBoard extends Component {
         let nextDST = 0;
         let pPlayers = this.state.filteredPlayers;
         let pickAfter = Number(this.state.pickAfter);
-        pPlayers.forEach((player, index) => {
+        await pPlayers.forEach((player, index) => {
             let adp = index+1;
             switch (player.position) {
                 case 'QB':
@@ -143,7 +148,7 @@ class DraftBoard extends Component {
                 default:
             }
         })
-        pPlayers.forEach((player, index) => {
+        await pPlayers.forEach((player) => {
             switch (player.position) {
                 case 'QB':
                     player.diff = Math.round(player.fpts - nextQB)
@@ -170,6 +175,8 @@ class DraftBoard extends Component {
         await this.setState({
             filteredPlayers: pPlayers
         })
+
+        return Promise.resolve("players updated");
 
     }
 
@@ -199,6 +206,8 @@ class DraftBoard extends Component {
             filteredPlayers: players,
             query: '',
         });
+        await this.setNextPicks();
+        return Promise.resolve("player drafted");
     }
 
     undo(currentDraft) {
@@ -216,18 +225,20 @@ class DraftBoard extends Component {
             currentDraft: this.state.currentDraft - 1,
             players: players,
         });
+        return Promise.resolve("undo last pick");
     }
 
-    reset() {
+    async reset() {
         const players = this.state.players.slice();
         players.map((player, i) => {
             return player.drafted = null;
         });
 
-        this.setState({
+        await this.setState({
             currentDraft: 0,
             players: players,
         });
+        return Promise.resolve("players reset");
     }
 
     render() {
@@ -243,11 +254,11 @@ class DraftBoard extends Component {
             <div className='row'>
                 <UndraftedAll
                     players={this.state.filteredPlayers}
-                    draft={(p) => this.draft(p).then((p)=>this.setNextPicks())}
+                    draft={(p) => this.draft(p).then(()=>this.setNextPicks())}
                     fetch={(e) => this.fetchPlayers(e.target.value)}
                     search={(e) => this.searchPlayers(e.target.value)}
-                    updateTeams={(e) => this.updateTeams(e.target.value).then((p)=>this.setPicks())}
-                    updatePick={(e) => this.updatePick(e.target.value).then((p)=>this.setPicks())}
+                    updateTeams={(e) => this.updateTeams(e.target.value).then(()=>this.setPicks())}
+                    updatePick={(e) => this.updatePick(e.target.value).then(()=>this.setPicks())}
                     format={this.state.format}
                     query={this.state.query}
                     teams={this.state.teams}
@@ -256,7 +267,7 @@ class DraftBoard extends Component {
 
                 <UndraftedPositions
                     players={this.state.players}
-                    draft={(p) => this.draft(p).then((p)=>this.setNextPicks())}
+                    draft={(p) => this.draft(p).then(()=>this.setNextPicks())}
                     currentPick={this.state.currentDraft}
                     nextPick={this.state.nextPick}
                     pickAfter={this.state.pickAfter}
@@ -266,8 +277,8 @@ class DraftBoard extends Component {
                 <Drafted
                     currentDraft={this.state.currentDraft}
                     players={this.state.players}
-                    undo={(c) => this.undo(c).then((p)=>this.setNextPicks())}
-                    reset={(e) => this.reset(e).then((p)=>this.setNextPicks())}
+                    undo={(c) => this.undo(c).then((p)=>this.setNextPicks()).then((v)=>this.updatePlayerValues)}
+                    reset={() => this.reset().then(()=>this.setNextPicks()).then(()=>this.updatePlayerValues)}
                 />
             </div>
         );
