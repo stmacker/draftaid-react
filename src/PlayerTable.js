@@ -1,6 +1,13 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 
 class PlayerTable extends PureComponent {
+
+  headers() {
+    return this.props.headers.map(header => {
+        return <th >{header}</th>
+    });
+  }
   rows() {
     let players = this.props.players.slice();
 
@@ -29,25 +36,31 @@ class PlayerTable extends PureComponent {
     if (disable) {
       return 'pointer'
     }
-    if (diff < 0) {
-      return 'danger pointer'
+    if (diff < -2) {
+      return 'red pointer'
     }
-    if (diff < 12) {
-      return 'active pointer'
+    if (diff < 2) {
+      return 'white pointer'
     }
-    if (diff < 24) {
-      return 'warning pointer'
+    if (diff < 10) {
+      return 'orange pointer'
     }
-    if (diff < 36) {
-      return 'success pointer'
+    if (diff < 20) {
+      return 'yellow pointer'
     }
-      return 'info pointer'
+    if (diff < 30) {
+      return 'green pointer'
+    }
+    if (diff < 40) {
+      return 'blue pointer'
+    }
+      return 'purple pointer'
   }
 
   columns(player) {
     return this.props.fields.map((f, i) => {
-      if (f === 'tier') {
-        return <td key={i}>Tier {player[f]}</td>
+      if (f === 'fpts') {
+        return <td key={i}> {Math.round(player[f])}</td>
       } else {
         return <td key={i}>{player[f]}</td>
       }
@@ -57,6 +70,7 @@ class PlayerTable extends PureComponent {
   render() {
     return (
         <table className='table table-condensed table-hover table-striped'>
+          <thead><tr>{this.headers()}</tr></thead>
           <tbody>{this.rows()}</tbody>
         </table>
     );
@@ -64,12 +78,13 @@ class PlayerTable extends PureComponent {
 }
 
 PlayerTable.propTypes = {
-  players: React.PropTypes.array.isRequired,
-  fields: React.PropTypes.array.isRequired,
-
-  onClick: React.PropTypes.func,
-  size: React.PropTypes.number,
-  disableColor: React.PropTypes.bool,
+  players: PropTypes.array.isRequired,
+  headers: PropTypes.array.isRequired,
+  fields: PropTypes.array.isRequired,
+  onClick: PropTypes.func,
+  size: PropTypes.number,
+  disableColor: PropTypes.bool,
+  maxDiff: PropTypes.number,
 };
 
 export default PlayerTable

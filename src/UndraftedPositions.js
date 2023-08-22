@@ -1,77 +1,90 @@
 import React from 'react';
 
 import Undrafted from './Undrafted'
+import PropTypes from "prop-types";
 
 function UndraftedPositions(props) {
-    const fields = ['rank', 'fpts','diff', 'position', 'name', 'team'];
+    const headers = ['ADP', 'FPts','Diff',"Pos","Player","Team"]
+    const fields = ['adp', 'fpts','diff', 'position', 'player', 'team'];
 
     return (
-        <div className='col-md-6 col-sm-12 hidden-xs'>
-           <br /> <br />
+        <div className='col-50'>
             <div className='aid-title'>
                 <i className='fa fa-signal'></i> Top Picks By Position
             </div>
-            <div className='col-sm-6'>
+            <div className='col-50'>
                 <span className="col-sm-12 position-title">Running Backs</span>
                 <Undrafted
+                    headers={headers}
                     fields={fields}
                     players={props.players}
                     draft={(p) => props.draft(p)}
-                    size={17}
+                    size={20}
                     position='RB'
+                    maxDiff={props.maxDiff}
                 />
             </div>
 
-            <div className='col-sm-6'>
+            <div className='col-50'>
                 <span className="col-sm-12 position-title">Wide Receivers</span>
                 <Undrafted
+                    headers={headers}
                     fields={fields}
                     players={props.players}
                     draft={(p) => props.draft(p)}
-                    size={17}
+                    size={20}
                     position='WR'
+                    maxDiff={props.maxDiff}
                 />
             </div>
 
-            <div className='col-sm-6'>
+            <div className='col-50'>
                 <span className="col-sm-12 position-title">Quarterbacks</span>
                 <Undrafted
+                    headers={[]}
                     fields={fields}
                     players={props.players}
                     draft={(p) => props.draft(p)}
-                    size={10}
+                    size={12}
                     position='QB'
+                    maxDiff={props.maxDiff}
                 />
             </div>
 
-            <div className='col-sm-6'>
+            <div className='col-50'>
                 <span className="col-sm-12 position-title">Tightends</span>
                 <Undrafted
+                    headers={[]}
                     fields={fields}
                     players={props.players}
                     draft={(p) => props.draft(p)}
-                    size={10}
+                    size={12}
                     position='TE'
+                    maxDiff={props.maxDiff}
                 />
             </div>
-            <div className='col-sm-6'>
+            <div className='col-50'>
                 <span className="col-sm-12 position-title">Kickers</span>
                 <Undrafted
+                    headers={[]}
                     fields={fields}
                     players={props.players}
                     draft={(p) => props.draft(p)}
                     size={3}
                     position='K'
+                    maxDiff={props.maxDiff}
                 />
             </div>
-            <div className='col-sm-6'>
+            <div className='col-50'>
                 <span className="col-sm-12 position-title">DST</span>
                 <Undrafted
+                    headers={[]}
                     fields={fields}
                     players={props.players}
                     draft={(p) => props.draft(p)}
                     size={3}
                     position='DST'
+                    maxDiff={props.maxDiff}
                 />
             </div>
         </div>
@@ -79,8 +92,9 @@ function UndraftedPositions(props) {
 }
 
 UndraftedPositions.propTypes = {
-    draft: React.PropTypes.func.isRequired,
-    players: React.PropTypes.array.isRequired,
+    draft: PropTypes.func.isRequired,
+    players: PropTypes.array.isRequired,
+    maxDiff: PropTypes.number,
 };
 
 export default UndraftedPositions

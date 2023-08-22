@@ -2,4 +2,170 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  font-size: .9em;
+  text-align: center;
+}
+
+.pull-right {
+  float: right;
+}
+
+.collapse {
+  display: none
+}
+
+.collapse.in {
+  display: block
+}
+
+.btn {
+  border-radius: 10px;
+  font-weight:bold;
+}
+
+.container {padding-left:0px;padding-right:5px;}
+.row {margin-left:0px;margin-right:-5px;}
+.row > div {padding-left:1px;padding-right:5px;}
+
+.scrollable {
+  overflow-y: auto;
+  overflow-x: clip;
+}
+
+input[type='number']{
+  width: 40px;
+}
+
+.table-condensed > tbody > tr > td {
+  padding: 2px;
+  font-size: 12px;
+  border-left: 1px solid darkgrey;
+  white-space: nowrap;
+}
+
+.aid-title {
+  text-align: center;
+  font-weight: bold;
+  background-color: #eee;
+  padding: 5px;
+  margin-bottom: 5px;
+}
+
+.position-title {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+html, body {
+  height: 100%;
+}
+
+#wrap {
+  min-height: 100%;
+}
+
+#main {
+  overflow-x: clip;
+  padding-bottom:10px; /* this needs to be bigger than footer height*/
+}
+
+.overall-rankings {
+  height: 500px;
+  margin-bottom: 10px;
+}
+
+.btn-responsive {
+  padding: 4px 8px;
+  font-size: 90%;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.col-25 {
+  float:left;
+  width:24.5%
+}
+
+.col-50 {
+  float:left;
+  width:49%
+}
+
+.col-100 {
+  width:98%;
+}
+
+table {
+  width: 98%;
+  margin: 5px;
+  text-align: center;
+}
+
+tbody {
+  border: 1px solid darkgrey;
+}
+
+.red{
+  background-color: #ffb5b577;
+}
+
+.white{
+  background-color: whitesmoke;
+}
+
+.orange{
+  background-color: #ffdeb577;
+}
+
+.yellow{
+  background-color: #fbffb577;
+}
+
+.green{
+  background-color: #b5ffd077;
+}
+
+.blue{
+  background-color: #b5deff77;
+}
+
+.purple{
+  background-color: #e3b5ff77;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+.drafted tr:nth-child(even) {
+  background-color: #dbdbdb77;
+}
+
+tr:hover, .btn:hover{
+  -webkit-filter: brightness(77%);
+}
+
+@media(min-width: 768px){
+  .btn-responsive {
+    font-size: 100%;
+    padding: 5px 10px;
+  }
+
+  .overall-rankings {
+    height: 750px;
+    margin-bottom: 10px;
+  }
+
+  .draft-history {
+    height: 750px;
+  }
+
+  .table-condensed > tbody > tr > td {
+    padding: 2px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
 }

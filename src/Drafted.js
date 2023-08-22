@@ -1,29 +1,28 @@
 import React from 'react';
 
 import PlayerTable from './PlayerTable'
+import PropTypes from "prop-types";
 
 function Drafted(props) {
     let players = props.players.slice().filter(p => p.drafted);
     players = players.sort((a, b) => b.drafted - a.drafted);
 
     return (
-        <div className='col-md-3 col-sm-12 col-xs-12'>
-            <div>Current Pick:{props.currentPick+1} | Next Pick:{props.nextPick} | Pick After:{props.pickAfter} </div>
-            <br />
+        <div className='col-25 drafted'>
             <div className='aid-title hidden-xs'>
-                <i className='fa fa-history'></i> Draft History
+                Draft History
             </div>
             <div className="row form-group">
                 <div className="col-md-12">
                     <button
-                        className='pull-right btn btn-sm btn-warning btn-responsive'
+                        className='pull-right btn btn-sm btn-warning btn-responsive red'
                         onClick={()=>props.reset()}>
-                        <i className='fa fa-eject'></i> Reset
+                        Reset
                     </button>
                     <button
-                        className='pull-right btn btn-sm btn-info btn-responsive'
+                        className='pull-right btn btn-sm btn-info btn-responsive yellow'
                         onClick={()=>props.undo(props.currentDraft)}>
-                        <i className='fa fa-backward'></i> Undo
+                        Undo
                     </button>
                 </div>
             </div>
@@ -31,7 +30,8 @@ function Drafted(props) {
 
 
             <PlayerTable
-                fields={['drafted', 'name', 'position', 'team']}
+                headers={['Pick','Player','Pos','Team']}
+                fields={['drafted', 'player', 'position', 'team']}
                 players={players}
                 disableColor={true}
             />
@@ -40,10 +40,11 @@ function Drafted(props) {
 }
 
 Drafted.propTypes = {
-    currentDraft: React.PropTypes.number.isRequired,
-    reset: React.PropTypes.func.isRequired,
-    undo: React.PropTypes.func.isRequired,
-    players: React.PropTypes.array.isRequired,
+    currentDraft: PropTypes.number.isRequired,
+    reset: PropTypes.func.isRequired,
+    undo: PropTypes.func.isRequired,
+    players: PropTypes.array.isRequired,
+    buffer: PropTypes.number
 };
 
 export default Drafted
