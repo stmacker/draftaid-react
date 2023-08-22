@@ -22,10 +22,10 @@ function UndraftedAll(props) {
           </div>
           </div>
 
-        <div className='scrollable overall-rankings'>
+        <div className='scrollable overall-rankings col-100'>
           <Undrafted
-              headers={['ADP', 'FPts','Diff',"Pos","Player","Team"]}
-              fields={['adp', 'fpts','diff', 'position', 'player', 'team']}
+              headers={['ADP', 'FPts','Val',"Pos","Player","Team"]}
+              fields={['adp', 'fpts','diff', 'pos', 'player', 'team']}
               players={props.players}
               draft={(p) => props.draft(p)}
           />
@@ -36,7 +36,6 @@ function UndraftedAll(props) {
 
 UndraftedAll.propTypes = {
   players: PropTypes.array.isRequired,
-  format: PropTypes.string.isRequired,
   query: PropTypes.string.isRequired,
   search: PropTypes.func.isRequired,
 };

@@ -4,8 +4,8 @@ import Undrafted from './Undrafted'
 import PropTypes from "prop-types";
 
 function UndraftedPositions(props) {
-    const headers = ['ADP', 'FPts','Diff',"Pos","Player","Team"]
-    const fields = ['adp', 'fpts','diff', 'position', 'player', 'team'];
+    const headers = ['ADP', 'FPts','Val',"Pos","Player","Team"]
+    const fields = ['adp', 'fpts','diff', 'pos', 'player', 'team'];
 
     return (
         <div className='col-50'>

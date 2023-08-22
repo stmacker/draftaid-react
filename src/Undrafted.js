@@ -7,7 +7,7 @@ function Undrafted(props) {
   let players = props.players.slice().filter(p => !p.drafted);
 
   if (props.position) {
-    players = players.filter(p => p.position.includes(props.position));
+    players = players.filter(p => p.pos.includes(props.position));
   }
 
   players = players.sort((a, b) => a.adp - b.adp);

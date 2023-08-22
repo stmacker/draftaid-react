@@ -31,7 +31,7 @@ function Drafted(props) {
 
             <PlayerTable
                 headers={['Pick','Player','Pos','Team']}
-                fields={['drafted', 'player', 'position', 'team']}
+                fields={['drafted', 'player', 'pos', 'team']}
                 players={players}
                 disableColor={true}
             />

@@ -5,6 +5,7 @@ import Drafted from './Drafted'
 import std from '../data/std.csv'
 import halfppr from '../data/halfppr.csv'
 import ppr from '../data/ppr.csv'
+import Papa from 'papaparse'
 
 
 
@@ -15,7 +16,9 @@ class DraftBoard extends Component {
 
       this.state = {
           players: [],
+          undraftedPlayers: [],
           filteredPlayers: [],
+          nextAvailable: [],
           isLoading: true,
           currentDraft: 0,
           fetchError: null,
@@ -28,27 +31,38 @@ class DraftBoard extends Component {
           pickAfter: 24,
           maxDiff: 0,
           expandSettings: true,
-          buffer: 0.25
+          buffer: 0.25,
+          data: null
       };
+
+      this.updateData = this.updateData.bind(this);
     }
 
-    async componentDidMount() {
-      await this.fetchPlayers(this.state.format);
-      await this.updatePlayerValues();
+    componentDidMount() {
+      this.fetchPlayers(this.state.format);
     }
 
-    async updateFormat(format){
+    updateFormat(format){
         this.setState({
             format: format
-        });
-        await this.componentDidMount();
-        return Promise.resolve("new format loaded");
+        }, function () {this.componentDidMount()});
     }
 
-    async fileUpload(f){
-
+    fileUpload(f){
+        if (f) {
+            Papa.parse(f[0], {
+                header: true,
+                dynamicTyping: true,
+                complete: this.updateData
+            })
+        }
     }
-    async fetchPlayers(format) {
+
+    updateData(result){
+        this.setState({data: result.data},
+            function () {this.fetchPlayers('custom')})
+    }
+    fetchPlayers(format) {
         let data = null;
         switch (format){
             case 'std':
@@ -58,51 +72,45 @@ class DraftBoard extends Component {
                 data = halfppr;
                 break;
             case 'ppr':
-            default:
                 data = ppr;
                 break;
-
+            case 'custom':
+                if(this.state.data != null) {
+                    data = this.state.data.sort((a, b) => a.adp - b.adp);
+                    break;
+                }
+                data = std;
+                break;
         }
 
         this.setState({
             players: data,
             filteredPlayers: data,
+            undraftedPlayers: data,
             isLoading: false,
             query: '',
-        });
-        await this.updatePlayerValues();
-        return Promise.resolve("players imported");
+        }, function () {this.updatePlayerValues()});
     }
 
 
-    async updateTeams(teamIn) {
+    updateTeams(teamIn) {
         teamIn = Number(teamIn);
-        await this.setState({
+        this.setState({
             teams: teamIn,
-        });
-        await this.setPicks();
-        return Promise.resolve("number of teams updated");
+        }, function () {this.setPicks()});
     }
 
-    async updatePick(pickIn) {
+    updatePick(pickIn) {
         pickIn = Number(pickIn);
         if (pickIn > this.state.teams) {
-            await this.setState({
-                pick: null,
-            })
-            return Promise.resolve("invalid pick");
+            pickIn = null;
         }
         if (pickIn < 1) {
-            await this.setState({
-                pick: null,
-            })
-            return Promise.resolve("invalid pick");
+            pickIn = null;
         }
-        await this.setState({
+        this.setState({
             pick: pickIn,
-        })
-        await this.setPicks()
-        return Promise.resolve("pick position updated");
+        }, function () {this.setPicks()})
     }
 
     async updateBuffer(bufferIn){
@@ -113,7 +121,7 @@ class DraftBoard extends Component {
         return Promise.resolve("buffer updated")
     }
 
-    async setPicks() {
+    setPicks() {
         let newPicks = [];
         for (let round = 1; round <= 16; round++) {
             let draftpick;
@@ -124,114 +132,63 @@ class DraftBoard extends Component {
             }
             newPicks.push(draftpick);
         }
-        await this.setState({picks: newPicks})
-        await this.setNextPicks()
-        return Promise.resolve("picks set");
+        this.setState({picks: newPicks}, function () {this.setNextPicks()})
     }
-    async setNextPicks() {
+    setNextPicks() {
         for (let round = 1; round <= 16; round++) {
             if (this.state.picks[round-1] >= this.state.currentDraft+1) {
                 if(this.state.picks[round-1]+1===this.state.picks[round]){
-                    await this.setState({
+                    this.setState({
                         nextPick: this.state.picks[round-1]+','+this.state.picks[round],
                         pickAfter: this.state.picks[round+1]
-                    });
-                }else{
-                await this.setState({
+                    }, function () {this.updatePlayerValues()}
+                    )}
+                else{
+                this.setState({
                     nextPick: this.state.picks[round-1],
                     pickAfter: this.state.picks[round]
-                });}
+                }, function () {this.updatePlayerValues()}
+                )}
                 break;
             }
         }
-        await this.updatePlayerValues();
-        return Promise.resolve("picks updated");
     }
 
-    async updatePlayerValues() {
-        let nextQB = 0;
-        let nextRB = 0;
-        let nextWR = 0;
-        let nextTE = 0;
-        let nextK = 0;
-        let nextDST = 0;
+    updatePlayerValues() {
         let pPlayers = this.state.players.slice().filter(p => !p.drafted);
-        let pickAfter = Number(this.state.pickAfter) - Number(this.state.currentDraft) + (Number(this.state.pickAfter)-Number(this.state.currentDraft))*this.state.buffer;
-        await pPlayers.forEach((player, index) => {
-            let adp = index+1;
-            let pts = player.fpts;
-            switch (player.position) {
-                case 'QB':
-                    if (nextQB < pts && adp > pickAfter) {
-                        nextQB = pts;
-                    }
-                    break;
-                case 'RB':
-                    if (nextRB < pts && (adp > pickAfter)) {
-                        nextRB = pts;
-                    }
-                    break;
-                case 'WR':
-                    if (nextWR < pts && (adp > pickAfter)) {
-                        nextWR = pts;
-                    }
-                    break;
-                case 'TE':
-                        if (nextTE < pts && (adp > pickAfter)) {
-                        nextTE = pts;
-                    }
-                    break;
-                case 'K':
-                    if (nextK < pts && (adp > pickAfter)) {
-                        nextK = pts;
-                    }
-                    break;
-                case 'DST':
-                    if (nextDST < pts && (adp > pickAfter)) {
-                        nextDST = pts;
-                    }
-                    break;
-                default:
-            }
-        })
-        let maxDiff = 0;
-        await pPlayers.forEach((player) => {
-            switch (player.position) {
-                case 'QB':
-                    player.diff = Math.round(player.fpts - nextQB)
-                    break;
-                case 'RB':
-                    player.diff = Math.round(player.fpts - nextRB)
-                    break;
-                case 'WR':
-                    player.diff = Math.round(player.fpts - nextWR)
-                    break;
-                case 'TE':
-                    player.diff = Math.round(player.fpts - nextTE)
-                    break;
-                case 'K':
-                    player.diff = Math.round(player.fpts - nextK)
-                    break;
-                case 'DST':
-                    player.diff = Math.round(player.fpts - nextDST)
-                    break;
-                default:
-            }
-            if(player.diff > maxDiff){
-                maxDiff = player.diff;
-            }
-        })
-
-        await this.setState({
-            filteredPlayers: pPlayers,
-            maxDiff: maxDiff
-        })
-        await this.render();
-        return Promise.resolve("players updated");
-
+        this.setState({undraftedPlayers: pPlayers}, function () {this.updateNextAvailableValues()})
     }
 
+    updateNextAvailableValues(){
+        let next = []
+        next['QB'] = 0;
+        next['RB'] = 0;
+        next['WR'] = 0;
+        next['TE'] = 0;
+        next['K'] = 0;
+        next['DST'] = 0;
+        let pickAfter = Number(this.state.pickAfter) - Number(this.state.currentDraft) + (Number(this.state.pickAfter)-Number(this.state.currentDraft))*this.state.buffer;
+        let pPlayers = this.state.undraftedPlayers;
+        pPlayers.forEach((player, index) => {
+            let adp = index+1;
+            if (next[player.pos] < player.fpts && adp > pickAfter) {
+                next[player.pos] = player.fpts;
+            }
+        })
+        this.setState({nextAvailable: next}, function() {this.updateValvsNextAvailable()})
+    }
 
+    updateValvsNextAvailable(){
+        let pPlayers = this.state.undraftedPlayers;
+        let next = this.state.nextAvailable;
+        pPlayers.forEach((player) => {
+            player.diff = Math.round(player.fpts - next[player.pos])
+        })
+        this.setState({
+            player: pPlayers,
+            filteredPlayers: pPlayers,
+        }, function () {this.render()})
+    }
 
     searchPlayers(query) {
       let players = this.state.players.filter(player =>
@@ -244,24 +201,22 @@ class DraftBoard extends Component {
       });
     }
 
-    async draft(player) {
+    draft(player) {
         const players = this.state.players.slice();
         const index = players.indexOf(player);
         if (~index) {
             players[index].drafted = this.state.currentDraft + 1;
         }
 
-        await this.setState({
+        this.setState({
             currentDraft: this.state.currentDraft + 1,
             players: players,
             filteredPlayers: players,
             query: '',
-        });
-        await this.setNextPicks();
-        return Promise.resolve("player drafted");
+        }, function () {this.setNextPicks()});
     }
 
-    async undo(currentDraft) {
+    undo(currentDraft) {
         if (currentDraft === 0) {
             return
         }
@@ -275,31 +230,61 @@ class DraftBoard extends Component {
         this.setState({
             currentDraft: this.state.currentDraft - 1,
             players: players,
-        });
-        await this.setNextPicks();
-        return Promise.resolve("undo last pick");
+        }, function () {this.setNextPicks()});
     }
 
-    async reset() {
+    reset() {
         const players = this.state.players.slice();
         players.map((player, i) => {
             return player.drafted = null;
         });
 
-        await this.setState({
+        this.setState({
             currentDraft: 0,
             players: players,
-        });
-        await this.setNextPicks();
-        return Promise.resolve("players reset");
+        }, function () {this.setNextPicks()});
     }
 
-    toggleSettings() {
-        this.setState({
-            expandSettings: !this.state.expandSettings
-        });
-    }
+    downloadCSV()
+    {
+        let data = null
+        switch (format){
+            case 'std':
+                data = std
+                break;
+            case 'halfppr':
+                data = halfppr;
+                break;
+            case 'ppr':
+                data = ppr;
+                break;
+            case 'custom':
+                if(this.state.data != null) {
+                    data = this.state.data.sort((a, b) => a.adp - b.adp);
+                    break;
+                }
+                data = std;
+                break;
+        }
 
+        let csv=  Papa.unparse(ppr);
+
+        let csvData = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+        let csvURL =  null;
+        if (navigator.msSaveBlob)
+        {
+            csvURL = navigator.msSaveBlob(csvData, 'template.csv');
+        }
+        else
+        {
+            csvURL = window.URL.createObjectURL(csvData);
+        }
+
+        let tempLink = document.createElement('a');
+        tempLink.href = csvURL;
+        tempLink.setAttribute('download', 'template.csv');
+        tempLink.click();
+    }
     render() {
         if (this.state.isLoading) {
             return (<div className='row'>Loading...</div>)
@@ -319,6 +304,7 @@ class DraftBoard extends Component {
                     <div className="col-50">
                         <b>Value Based Draft Aid</b>: Value over Next Available (ADP+Proj source: FantasyPros.com)<br />
                         Thanks to jayzheng for his original and open sourcing his code: <a href='https://jayzheng.com/ff/'>JZ Draftaid</a>.<br />
+                        Next Available: {this.state.undraftedPlayers[0].adp}
                     </div>
                     <div className="col-25">
                         <div className={"collapse" + (this.state.expandSettings ? ' in' : '')}>
@@ -334,21 +320,21 @@ class DraftBoard extends Component {
                                     <option value="14">14</option>
                                     <option value="16">16</option>
                                 </select>
-                                    #pick:<input type="number" value={ this.state.pick } onChange={(e) => this.updatePick(e.target.value)} >
+                                     #pick:<input type="number" value={ this.state.pick } onChange={(e) => this.updatePick(e.target.value)} >
                                 </input>
-                                    adpBuffer:<select value={ this.state.buffer } onChange={(e)=> this.updateBuffer(e.target.value)} >
+                                     adpBuffer:<select value={ this.state.buffer } onChange={(e)=> this.updateBuffer(e.target.value)} >
                                     <option value="0">0%</option>
                                     <option value="0.25">+25%</option>
                                     <option value="0.5">+50%</option>
                                 </select>
                                     <div>
-                                        format:<select value={ this.state.format } onChange={(e)=> this.updateFormat(e.target.value).then(f=> this.componentDidMount())} >
+                                        format:<select value={ this.state.format } onChange={(e)=> this.updateFormat(e.target.value)} >
                                         <option value="std">STD</option>
                                         <option value="halfppr">.5 PPR</option>
                                         <option value="ppr">PPR</option>
-                                        {/*<option value="custom">custom</option>*/}
-                                    </select>
-                                        <div className={"collapse" + (String(this.state.format) === "custom" ? ' in' : '')}><input type="file" accept=".csv" onChange={(e) => this.fileUpload(e.target.value)}/></div>
+                                        <option value="custom">Custom</option>
+                                    </select> <a href="" onClick={(e) => this.downloadCSV()}>Download template</a>
+                                        <div><input type="file" accept=".csv" onChange={(e) => this.fileUpload(e.target.files)}/></div>
                                     </div>
                                 </div>
                             </div>
@@ -360,15 +346,12 @@ class DraftBoard extends Component {
                     players={this.state.filteredPlayers}
                     draft={(p) => this.draft(p)}
                     search={(e) => this.searchPlayers(e.target.value)}
-                    format={this.state.format}
                     query={this.state.query}
                 />
 
                 <UndraftedPositions
                     players={this.state.players}
                     draft={(p) => this.draft(p)}
-                    picks={this.state.picks}
-                    maxDiff={this.state.maxDiff}
                 />
 
                 <Drafted
