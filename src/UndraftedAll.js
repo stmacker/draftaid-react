@@ -22,7 +22,7 @@ function UndraftedAll(props) {
           </div>
           </div>
 
-        <div className='scrollable overall-rankings col-100'>
+        <div className='scrollable overall-rankings col-99'>
           <Undrafted
               headers={['ADP', 'FPts','Val',"Pos","Player","Team"]}
               fields={['adp', 'fpts','diff', 'pos', 'player', 'team']}
