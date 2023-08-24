@@ -53,6 +53,7 @@ class DraftBoard extends Component {
             Papa.parse(f[0], {
                 header: true,
                 dynamicTyping: true,
+                skipEmptyLines: true,
                 complete: this.updateData
             })
         }
@@ -248,7 +249,7 @@ class DraftBoard extends Component {
     downloadCSV()
     {
         let data = null
-        switch (format){
+        switch (this.state.format){
             case 'std':
                 data = std
                 break;
@@ -285,6 +286,10 @@ class DraftBoard extends Component {
         tempLink.setAttribute('download', 'template.csv');
         tempLink.click();
     }
+
+    showSettings(v){
+        this.setState({expandSettings: v});
+    }
     render() {
         if (this.state.isLoading) {
             return (<div className='row'>Loading...</div>)
@@ -298,47 +303,13 @@ class DraftBoard extends Component {
             <div className='row'>
                 <div className="col-100">
                 <div className="col-25">
+                    <div className='mobile'><b>Simple VBD Draft Aid</b>: Value over Next Available</div>
                     <div>Current Pick:{this.state.currentDraft+1} | Upcoming Pick:{this.state.nextPick} | Next Pick:{this.state.pickAfter} </div>
-                    <br />
                 </div>
                     <div className="col-50">
-                        <b>Value Based Draft Aid</b>: Value over Next Available (ADP+Proj source: FantasyPros.com)<br />
+                        <b>Simple Value Based Draft Aid</b>: Value over Next Available
+                        <br />(ADP+Proj source: FantasyPros.com)<br />
                         Thanks to jayzheng for his original and open sourcing his code: <a href='https://jayzheng.com/ff/'>JZ Draftaid</a>.<br />
-                        Next Available: {this.state.undraftedPlayers[0].adp}
-                    </div>
-                    <div className="col-25">
-                        <div className={"collapse" + (this.state.expandSettings ? ' in' : '')}>
-                            <div className="row form-group">
-                                <div className="form-group">
-                                    #teams:<select value={ this.state.teams } onChange={(e) => this.updateTeams(e.target.value)} >
-                                    <option value="2">2</option>
-                                    <option value="4">4</option>
-                                    <option value="6">6</option>
-                                    <option value="8">8</option>
-                                    <option value="10">10</option>
-                                    <option value="12">12</option>
-                                    <option value="14">14</option>
-                                    <option value="16">16</option>
-                                </select>
-                                     #pick:<input type="number" value={ this.state.pick } onChange={(e) => this.updatePick(e.target.value)} >
-                                </input>
-                                     adpBuffer:<select value={ this.state.buffer } onChange={(e)=> this.updateBuffer(e.target.value)} >
-                                    <option value="0">0%</option>
-                                    <option value="0.25">+25%</option>
-                                    <option value="0.5">+50%</option>
-                                </select>
-                                    <div>
-                                        format:<select value={ this.state.format } onChange={(e)=> this.updateFormat(e.target.value)} >
-                                        <option value="std">STD</option>
-                                        <option value="halfppr">.5 PPR</option>
-                                        <option value="ppr">PPR</option>
-                                        <option value="custom">Custom</option>
-                                    </select> <a href="" onClick={(e) => this.downloadCSV()}>Download template</a>
-                                        <div><input type="file" accept=".csv" onChange={(e) => this.fileUpload(e.target.files)}/></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -359,6 +330,18 @@ class DraftBoard extends Component {
                     players={this.state.players}
                     undo={(c) => this.undo(c)}
                     reset={() => this.reset()}
+                    settings={(e) => this.showSettings(e)}
+                    expandSettings={this.state.expandSettings}
+                    teams={this.state.teams}
+                    updateTeams={(e) => this.updateTeams(e)}
+                    pick={this.state.pick}
+                    updatePick={(e) => this.updatePick(e)}
+                    buffer={this.state.buffer}
+                    updateBuffer={(e) => this.updateBuffer(e)}
+                    format={this.state.format}
+                    updateFormat={(e) => this.updateFormat(e)}
+                    downloadCSV={() => this.downloadCSV()}
+                    fileUpload={(e) => this.fileUpload(e)}
                 />
             </div>
         );

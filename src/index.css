@@ -2,8 +2,9 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  font-size: 250%;
+  font-size: calc(32px - 2.5vw + 1.5vh);
   text-align: center;
+  touch-action: manipulation;
 }
 
 input, select {
@@ -22,14 +23,52 @@ input, select {
   display: block
 }
 
+.mobile {
+  display: inherit;
+}
+
 .btn {
   border-radius: 10px;
   font-weight:bold;
 }
 
-.container {padding-left:0px;padding-right:5px;}
-.row {margin-left:0px;margin-right:-5px;}
-.row > div {padding-left:1px;padding-right:5px;}
+.p-grey {
+  margin:0;
+  padding:0;
+  filter: grayscale(100%)
+}
+
+.container {
+  padding-left:0px;
+  padding-right:5px;
+}
+
+.row {
+  margin-left:0px;
+  margin-right:-5px;
+}
+
+.form-group {
+  display:flex;
+  flex-wrap:wrap;
+}
+
+.settings {
+  border: 5px solid red;
+}
+
+.settings-warning{
+  font-weight: bold;
+}
+
+.form-group div {
+  padding: 5px 10px;
+}
+
+.row > div {
+  padding-left:1px;
+  padding-right:5px;
+}
 
 .scrollable {
   overflow-y: auto;
@@ -81,7 +120,7 @@ html, body {
 
 .btn-responsive {
   padding: 4px 8px;
-  font-size: 1.5em;
+  font-size: 120%;
 }
 
 .pointer {
@@ -140,6 +179,7 @@ tr:hover, .btn:hover{
 
 .col-25 {
   float:left;
+  min-width: 300px;
   width:99%;
 }
 
@@ -149,18 +189,34 @@ tr:hover, .btn:hover{
   display: none
 }
 
-.col-100 {
+.col-99 {
   float: left;
   width:99%;
 }
 
-@media(min-width: 1200px){
+.col-100 {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap:wrap;
+  float: left;
+  width:99%;
+}
+
+.window-warning{
+  display: inherit;
+}
+
+@media(min-width: 1250px){
   body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
     font-size: 100%;
     text-align: center;
+  }
+
+  .mobile {
+    display: none;
   }
 
   .btn-responsive {
@@ -197,5 +253,15 @@ tr:hover, .btn:hover{
   .col-100 {
     width:98%;
     float:left;
+  }
+
+  .window-warning{
+    display: none;
+  }
+}
+
+@media (hover: none){
+  .window-warning{
+    display: none;
   }
 }
